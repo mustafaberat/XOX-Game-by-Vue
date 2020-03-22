@@ -18,8 +18,8 @@
       <!-- Using sound: <td @click.prevent="playSound(soundPath)"  -->
     </tr>
     </table>
-    <p v-if="this.winner !== 'XOX' && this.isDone">{{this.gameOverMessage}} {{this.winner}}</p>
-    <p v-if="this.winner === 'XOX' && this.isDone">Game is over</p>
+    <p v-if="this.winner !== 'XOX' && this.isDone">The winner is {{this.winner}}</p>
+    <p v-if="this.winner === 'XOX' && this.isDone">Game over</p>
     <p v-if="this.isDone">Restart with:</p>
     <button v-if="this.isDone && this.winner === 'O'" @click="restart('easy')"> Easy </button>
     <button v-if="this.isDone && this.winner !== 'O'" @click="restart('normal')"> Normal </button>
@@ -32,7 +32,6 @@ export default {
   data: function(){
     return {
         isDone: false,
-        gameOverMessage : "Game is over. The winner is ",
         winner: '',
         difficulty: 'easy',
         turn: 'X',
