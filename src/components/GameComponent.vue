@@ -15,9 +15,11 @@
       <td @click="clicked(2,0)"><transition name="fade"><span v-if="this.board[2][0]">{{this.board[2][0]}} </span></transition></td>
       <td @click="clicked(2,1)"><transition name="fade"><span v-if="this.board[2][1]">{{this.board[2][1]}} </span></transition></td>
       <td @click="clicked(2,2)"><transition name="fade"><span v-if="this.board[2][2]">{{this.board[2][2]}} </span></transition></td>
+      <!-- Using sound: <td @click.prevent="playSound(soundPath)"  -->
     </tr>
     </table>
-    <p v-if="this.isDone">{{this.gameOverMessage}} {{this.winner}}</p>
+    <p v-if="this.winner !== 'XOX' && this.isDone">{{this.gameOverMessage}} {{this.winner}}</p>
+    <p v-if="this.winner === 'XOX' && this.isDone">Game is over</p>
     <button v-if="this.isDone" @click="restart()"> RESTART </button>
   </div>
 </template>
@@ -28,9 +30,10 @@ export default {
   data: function(){
     return {
         isDone: false,
-        gameOverMessage : "Game is over. The winner is: ",
+        gameOverMessage : "Game is over. The winner is ",
         winner: '',
         turn: 'X',
+        // soundPath: 'http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3',
         animation: true,
         board: [
           ['','',''],
@@ -40,6 +43,13 @@ export default {
     }
   },
   methods:{
+    // For sound 
+    // playSound: function(sound) {
+    //   if(sound) {
+    //     var audio = new Audio(sound);
+    //     audio.play();
+    //   }
+    // },
     restart: function() {
       this.board = [['','',''],['','',''],['','','']]
       this.turn = 'X'
@@ -135,6 +145,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 table{
   margin-left: auto;
   margin-right: auto;
@@ -143,22 +154,23 @@ table{
   height: 300px;
   table-layout: fixed;
   font-size: 2.5rem;
-  color: #304047;
+  color: #0a122e;
   border-collapse: collapse;
 }
 
 table tr:nth-child(1),
 table tr:nth-child(2){
-  border-bottom: 1px solid #304047;
+  border-bottom: 1px solid #0a122e;
 }
 
 table td:nth-child(1),
 table td:nth-child(2){
-  border-right: 1px solid #304047;
+  border-right: 1px solid #0a122e;
 }
 
 table td{
   font-weight: 900;
+  cursor: pointer;
   height: 33.3%;
   width: 33.3%;
 }
@@ -169,11 +181,16 @@ p{
 }
 
 button{
-  background-color: #304047;
+  background-color: #0a122e;
   border-radius: 5px;
   border: 0;
   padding: 10px 20px;
   color: white;
+  cursor: pointer;
+}
+
+button:hover{
+  background-color: #0e1c50;
 }
 
 .fade-enter-active, .fade-leave-active {
