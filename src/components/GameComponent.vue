@@ -20,7 +20,9 @@
     </table>
     <p v-if="this.winner !== 'XOX' && this.isDone">{{this.gameOverMessage}} {{this.winner}}</p>
     <p v-if="this.winner === 'XOX' && this.isDone">Game is over</p>
-    <button v-if="this.isDone" @click="restart()"> RESTART </button>
+    <p v-if="this.isDone">Restart with:</p>
+    <button v-if="this.isDone && this.winner === 'O'" @click="restart('easy')"> Easy </button>
+    <button v-if="this.isDone && this.winner !== 'O'" @click="restart('normal')"> Normal </button>
   </div>
 </template>
 
@@ -32,7 +34,7 @@ export default {
         isDone: false,
         gameOverMessage : "Game is over. The winner is ",
         winner: '',
-        difficulty: 'normal',
+        difficulty: 'easy',
         turn: 'X',
         // soundPath: 'http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3',
         animation: true,
@@ -79,7 +81,6 @@ export default {
                 this.board[randindexX][randindexY] = ''
                 this.turn = 'O'
                 tryAgainCount += 1 
-                console.log(tryAgainCount+' - Tried')
               }
           }           
         } 
@@ -119,11 +120,11 @@ export default {
       } //End of if
     },
     //Restart button
-    restart: function() {
+    restart: function(diff) {
       this.board = [['','',''],['','',''],['','','']]
       this.turn = 'X'
       this.winner = ''
-      this.difficulty = 'normal'
+      this.difficulty = diff
       this.isDone = false
     },
 
@@ -193,13 +194,15 @@ table td{
 }
 
 p{
-  margin-top: 30px;
+  margin-top: 16px;
   font-weight: 900;
 }
 
 button{
   background-color: #0a122e;
   border-radius: 5px;
+  font-weight: 900;
+  /* text-transform: uppercase; */
   border: 0;
   padding: 10px 20px;
   color: white;
