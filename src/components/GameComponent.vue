@@ -45,16 +45,10 @@ export default {
       this.winner = ''
       this.isDone = false
     },
-    gameOver: function(){
-      this.turn = ''
-      console.log("H1 Must be seen")
-      console.log("EXIT EVERYTHING")
-    },
     clicked: function(x,y){
       this.markX(x,y)
-      this.isDoneF() && this.gameOver()
-      this.computerMove()
-      this.isDoneF() && this.gameOver()
+      this.isDoneF() ? this.turn = '' : this.computerMove()
+      this.isDoneF() ? this.turn = '' : null
     },
 
     computerMove: function(){
@@ -72,10 +66,30 @@ export default {
       }
     },
 
+    eachBoxFilled: function(){
+      let filledBoxCounter = 0
+      let i = 0
+      let j = 0
+    // EACH BOX FILLED
+      for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+          console.log("i: "+ i +" j: "+ j + " Board[i][j]: " + this.board[i][j])
+          if(this.board[i][j] !== ''){
+            filledBoxCounter += 1
+            console.log("Filled Counter: "+ filledBoxCounter)
+          }
+        }
+      }
+      if(filledBoxCounter === 9) {
+        this.winner = 'XOX'
+        this.isDone = true
+        return true
+      } else return false
+    },
+
     isDoneF: function(){
       if(!this.isDone){
         for (let i = 0; i < 3; i++) {
-          let filledBoxCounter = 0
         // HORIZONTAL
         if(this.board[i][0]!=='' && this.board[i][1]!=='' && this.board[i][2]!=='' && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2] ){
           this.isDone = true
@@ -100,20 +114,10 @@ export default {
           this.winner = this.turn === 'O' ? 'X' : 'O'
           return true
         }
-        // EACH BOX FILLED
-        for (let j = 0; j < 3; j++) {
-          if(this.board[i][j] !== ''){
-            filledBoxCounter++ 
-          }
-          if(filledBoxCounter === 9) {
-            this.winner = 'XOX'
-            this.isDone = true
-            return true
-          } 
-        }
       }
-      }
-    },
+      return this.eachBoxFilled()
+    }
+  },
 
     markX: function(x,y){
       if(this.turn === 'X' && this.board[x][y] === '' ){
