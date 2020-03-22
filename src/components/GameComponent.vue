@@ -73,6 +73,7 @@ export default {
           if(this.board[randindexX][randindexY] === ''){
             this.board[randindexX][randindexY] = 'O'
             if(this.isDoneF() || tryAgainCount >= 20){
+              this.isDone = false //to check in inDoneF after that function
               this.turn = 'X'
             } else{
                 this.board[randindexX][randindexY] = ''
@@ -93,7 +94,6 @@ export default {
           if(this.board[i][0]!=='' && this.board[i][1]!=='' && this.board[i][2]!=='' && this.board[i][0] === this.board[i][1] && this.board[i][1] === this.board[i][2] ){
             this.isDone = true
             this.winner = this.turn === 'O' ? 'X' : 'O'
-            this.turn = ''
             return true
           }
           // VERTICAL
