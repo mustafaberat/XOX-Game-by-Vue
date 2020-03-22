@@ -53,7 +53,8 @@ export default {
     },
 
     computerMove: function(){
-      if(this.turn === 'O'){
+      setTimeout(()=>{
+        if(this.turn === 'O'){
         /*eslint no-constant-condition: ["error", { "checkLoops": false }]*/
         while(true){
           let randindexX = Math.floor( Math.random() * 3)
@@ -65,6 +66,8 @@ export default {
           } 
         }
       }
+      this.$forceUpdate()
+      },500);
     },
 
     eachBoxFilled: function(){
@@ -139,7 +142,7 @@ table{
   width: 300px;
   height: 300px;
   table-layout: fixed;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #304047;
   border-collapse: collapse;
 }
@@ -162,6 +165,7 @@ table td{
 
 p{
   margin-top: 30px;
+  font-weight: 900;
 }
 
 button{
