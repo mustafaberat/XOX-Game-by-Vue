@@ -32,6 +32,7 @@ export default {
         isDone: false,
         gameOverMessage : "Game is over. The winner is ",
         winner: '',
+        difficulty: 'easy',
         turn: 'X',
         // soundPath: 'http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3',
         animation: true,
@@ -54,37 +55,50 @@ export default {
       this.board = [['','',''],['','',''],['','','']]
       this.turn = 'X'
       this.winner = ''
+      this.difficulty = 'easy'
       this.isDone = false
     },
     clicked: function(x,y){
       this.markX(x,y)
       this.isDoneF() ? this.turn = '' : this.computerMove()
-      this.isDoneF() ? this.turn = '' : null
+      this.isDoneF() ? this.turn = '' : null 
     },
 
     computerMove: function(){
+      let tryAgainCount = 0;
       setTimeout(()=>{
-        if(this.turn === 'O'){
         /*eslint no-constant-condition: ["error", { "checkLoops": false }]*/
-        while(true){
+        while(this.turn === 'O'){
           let randindexX = Math.floor( Math.random() * 3)
           let randindexY = Math.floor( Math.random() * 3)
-          if(this.board[randindexX][randindexY] === ''){
+          if(this.difficulty === 'easy'){
+            if(this.board[randindexX][randindexY] === ''){
             this.board[randindexX][randindexY] = 'O'
             this.turn = 'X'
-            break
           } 
-        }
-      }
+          }else if(this.difficulty === 'normal'){
+            if(this.board[randindexX][randindexY] === ''){
+              this.board[randindexX][randindexY] = 'O'
+              if(this.isDoneF() || tryAgainCount >= 20){
+                this.turn = 'X'
+               } else{
+                 this.board[randindexX][randindexY] = ''
+                 this.turn = 'O'
+                 tryAgainCount += 1 
+                 console.log(tryAgainCount+' - Tried')
+               }
+            }           
+          } 
+        } //end of while
       this.$forceUpdate()
-      },500);
+      }, 500);
     },
 
+      // EACH BOX FILLED
     eachBoxFilled: function(){
       let filledBoxCounter = 0
       let i = 0
       let j = 0
-    // EACH BOX FILLED
       for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
           if(this.board[i][j] !== ''){
@@ -132,7 +146,7 @@ export default {
   },
 
     markX: function(x,y){
-      if(this.turn === 'X' && this.board[x][y] === '' ){
+      if(this.turn === 'X' && this.board[x][y] === '' && !this.isDone){
         this.board[x][y] = 'X' 
         this.turn = 'O' 
         this.$forceUpdate()
@@ -140,7 +154,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
