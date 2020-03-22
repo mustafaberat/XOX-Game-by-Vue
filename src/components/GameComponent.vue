@@ -2,23 +2,23 @@
   <div>
     <table cellspacing= "0">
     <tr>
-      <td @click="clicked(0,0)">{{this.board[0][0]}} </td>
-      <td @click="clicked(0,1)">{{this.board[0][1]}} </td>
-      <td @click="clicked(0,2)">{{this.board[0][2]}} </td>
+      <td @click="clicked(0,0)"><transition name="fade"><span v-if="this.board[0][0]">{{this.board[0][0]}} </span></transition></td>
+      <td @click="clicked(0,1)"><transition name="fade"><span v-if="this.board[0][1]">{{this.board[0][1]}} </span></transition></td>
+      <td @click="clicked(0,2)"><transition name="fade"><span v-if="this.board[0][2]">{{this.board[0][2]}} </span></transition></td>
     </tr>
      <tr>
-      <td @click="clicked(1,0)">{{this.board[1][0]}} </td>
-      <td @click="clicked(1,1)">{{this.board[1][1]}} </td>
-      <td @click="clicked(1,2)">{{this.board[1][2]}} </td>
+      <td @click="clicked(1,0)"><transition name="fade"><span v-if="this.board[1][0]">{{this.board[1][0]}} </span></transition></td>
+      <td @click="clicked(1,1)"><transition name="fade"><span v-if="this.board[1][1]">{{this.board[1][1]}} </span></transition></td>
+      <td @click="clicked(1,2)"><transition name="fade"><span v-if="this.board[1][2]">{{this.board[1][2]}} </span></transition></td>
     </tr>
      <tr>
-      <td @click="clicked(2,0)">{{this.board[2][0]}} </td>
-      <td @click="clicked(2,1)">{{this.board[2][1]}} </td>
-      <td @click="clicked(2,2)">{{this.board[2][2]}} </td>
+      <td @click="clicked(2,0)"><transition name="fade"><span v-if="this.board[2][0]">{{this.board[2][0]}} </span></transition></td>
+      <td @click="clicked(2,1)"><transition name="fade"><span v-if="this.board[2][1]">{{this.board[2][1]}} </span></transition></td>
+      <td @click="clicked(2,2)"><transition name="fade"><span v-if="this.board[2][2]">{{this.board[2][2]}} </span></transition></td>
     </tr>
-  </table>
-  <p v-if="this.isDone">{{this.gameOverMessage}} {{this.winner}}</p>
-  <button v-if="this.isDone" @click="restart()"> RESTART </button>
+    </table>
+    <p v-if="this.isDone">{{this.gameOverMessage}} {{this.winner}}</p>
+    <button v-if="this.isDone" @click="restart()"> RESTART </button>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ export default {
         gameOverMessage : "Game is over. The winner is: ",
         winner: '',
         turn: 'X',
+        animation: true,
         board: [
           ['','',''],
           ['','',''],
@@ -73,10 +74,8 @@ export default {
     // EACH BOX FILLED
       for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
-          console.log("i: "+ i +" j: "+ j + " Board[i][j]: " + this.board[i][j])
           if(this.board[i][j] !== ''){
             filledBoxCounter += 1
-            console.log("Filled Counter: "+ filledBoxCounter)
           }
         }
       }
@@ -171,6 +170,13 @@ button{
   border: 0;
   padding: 10px 20px;
   color: white;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter, .fade-leave-to  {
+  opacity: 0;
 }
 
 </style>
