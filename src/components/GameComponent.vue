@@ -66,10 +66,10 @@ export default {
       this.isDoneF() ? this.turn = '' : null 
     },
 
-    computerMove: function(){ //REMOVE IF STATEMENTS IN HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-      this.difficulty === 'easy' && this.diffEasy()
-      this.difficulty === 'normal' && this.diffNormal()        
-      this.difficulty === 'hard' && this.diffHard()        
+    computerMove: function(){ 
+      this.diffEasy()
+      this.diffNormal()        
+      this.diffHard()        
       this.$forceUpdate()
     },
 
