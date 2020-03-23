@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
     <table cellspacing= "0">
     <tr>
       <td @click="clicked(0,0)"><transition name="fade"><span v-if="this.board[0][0]">{{this.board[0][0]}} </span></transition></td>
@@ -21,8 +21,14 @@
     <p v-if="this.winner !== 'XOX' && this.isDone">The winner is {{this.winner}}</p>
     <p v-if="this.winner === 'XOX' && this.isDone">Game over</p>
     <p v-if="this.isDone">Restart with:</p>
-    <button v-if="this.isDone && this.winner === 'O'" @click="restart('easy')"> Easy </button>
-    <button v-if="this.isDone && this.winner !== 'O'" @click="restart('normal')"> Normal </button>
+    <button v-if="this.isDone" @click="restart('easy')"> Easy </button>
+    <button v-if="this.isDone" @click="restart('normal')"> Normal </button>
+    <button v-if="this.isDone" @click="restart('hard')"> Hard </button>
+    <div class="diffinfo" v-if="this.isDone">
+      <i>Easy: Plays randomly</i>
+      <i>Normal: Does not miss opportunities</i>
+      <i>Hard: Prevents Finishing</i>
+    </div>
   </div>
 </template>
 
@@ -34,6 +40,7 @@ export default {
         isDone: false,
         winner: '',
         difficulty: 'easy',
+        dontLookCounter : 0,
         turn: 'X',
         // soundPath: 'http://soundbible.com/mp3/Elevator Ding-SoundBible.com-685385892.mp3',
         animation: true,
@@ -59,21 +66,67 @@ export default {
       this.isDoneF() ? this.turn = '' : null 
     },
 
-    computerMove: function(){
-      let tryAgainCount = 0;
-      while(this.turn === 'O'){
+    computerMove: function(){ //REMOVE IF STATEMENTS IN HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+      this.difficulty === 'easy' && this.diffEasy()
+      this.difficulty === 'normal' && this.diffNormal()        
+      this.difficulty === 'hard' && this.diffHard()        
+      this.$forceUpdate()
+    },
+
+    diffHard: function() {
+      if(this.difficulty === 'hard'){
+        let tryAgainCount = 0;
+        while(this.turn === 'O'){
         let randindexX = Math.floor( Math.random() * 3)
         let randindexY = Math.floor( Math.random() * 3)
-        if(this.difficulty === 'easy'){
+          
           if(this.board[randindexX][randindexY] === ''){
             this.board[randindexX][randindexY] = 'O'
-            this.turn = 'X'
-          } 
-        }
-        else if(this.difficulty === 'normal'){
+            if(this.dontLookCounter < 1){
+              this.dontLookCounter += 1
+              this.isDone = false //to check in inDoneF after that function
+              this.turn = 'X'
+            }
+            else if(this.isDoneF()){ // O can finish 
+              this.isDone = false //to check in inDoneF after that function
+              this.turn = 'X'
+            } 
+            else if(tryAgainCount >= 20 && tryAgainCount <= 40){ //Check X can finish, avoid[O cant finish]
+                this.board[randindexX][randindexY] = 'X' //Put it X on some point
+                this.turn = 'O'
+                if(this.isDoneF()){ //X can finish
+                  this.isDone = false
+                  this.board[randindexX][randindexY] = 'O' //Avoid that point
+                  this.turn = 'X'
+                } else{ //X can not finish
+                    this.board[randindexX][randindexY] = ''
+                    this.turn = 'O'
+                    tryAgainCount += 1 
+                }
+            }
+            else if(tryAgainCount > 40){ //Put in random box. Go outloop anymore
+              this.turn = 'X' 
+            } 
+            else{
+              this.board[randindexX][randindexY] = ''
+              this.turn = 'O'
+              tryAgainCount += 1 
+            }
+          }//End of empty box if
+        } //end of while
+      }
+    },
+
+    diffNormal: function() {
+      if(this.difficulty === 'normal'){
+        let tryAgainCount = 0;
+        while(this.turn === 'O'){
+        let randindexX = Math.floor( Math.random() * 3)
+        let randindexY = Math.floor( Math.random() * 3)
           if(this.board[randindexX][randindexY] === ''){
             this.board[randindexX][randindexY] = 'O'
-            if(this.isDoneF() || tryAgainCount >= 20){
+            if(this.isDoneF() || tryAgainCount >= 20 || this.dontLookCounter < 2){ //Won or no solution
+              this.dontLookCounter += 1
               this.isDone = false //to check in inDoneF after that function
               this.turn = 'X'
             } else{
@@ -81,10 +134,22 @@ export default {
                 this.turn = 'O'
                 tryAgainCount += 1 
               }
-          }           
-        } 
-      } //end of while
-    this.$forceUpdate()
+          }
+        } //end of while
+      }
+    },
+    
+    diffEasy: function(){
+        if(this.difficulty === 'easy'){
+          while(this.turn === 'O'){
+          let randindexX = Math.floor( Math.random() * 3)
+          let randindexY = Math.floor( Math.random() * 3)
+          if(this.board[randindexX][randindexY] === ''){
+            this.board[randindexX][randindexY] = 'O'
+            this.turn = 'X'
+          } 
+        }
+      }
     },
 
     isDoneF: function(){
@@ -122,6 +187,7 @@ export default {
     restart: function(diff) {
       this.board = [['','',''],['','',''],['','','']]
       this.turn = 'X'
+      this.dontLookCounter = 0
       this.winner = ''
       this.difficulty = diff
       this.isDone = false
@@ -202,6 +268,8 @@ button{
   border-radius: 5px;
   font-weight: 900;
   /* text-transform: uppercase; */
+  margin-left: 5px;
+  margin-right: 5px;
   border: 0;
   padding: 10px 20px;
   color: white;
@@ -217,6 +285,49 @@ button:hover{
 }
 .fade-enter, .fade-leave-to  {
   opacity: 0;
+}
+
+.diffinfo{
+  display: none;
+  grid-template-columns:auto auto auto; 
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 40px;
+}
+
+@media (min-width: 700px){
+  .diffinfo{
+      display: grid;
+    }
+}
+
+@media (max-width: 300px) {
+  .container {
+    font-size: 0.8rem;
+  }
+  table{
+    width: 250px;
+    height: 250px;
+    font-size: 30px;
+  }
+  button{
+    margin-top: 5px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 270px) {
+  .container {
+    font-size: 0.8rem;
+  }
+  table{
+    width: 220px;
+    height: 200px;
+  }
+  button{
+    margin-top: 5px;
+    font-size: 0.7rem;
+  }
 }
 
 </style>
