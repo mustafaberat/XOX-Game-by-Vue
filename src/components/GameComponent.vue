@@ -18,6 +18,7 @@
       <!-- Using sound: <td @click.prevent="playSound(soundPath)"  -->
     </tr>
     </table>
+    <p v-if="!this.isDone">{{this.difficulty}}</p>
     <p v-if="this.winner !== 'XOX' && this.isDone">The winner is {{this.winner}}</p>
     <p v-if="this.winner === 'XOX' && this.isDone">Game over</p>
     <p v-if="this.isDone">Restart with:</p>
